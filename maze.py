@@ -58,6 +58,7 @@ class Maze:
 
     # recursive dfs
     def dfs(self):
+        self.makeNodes()
         visited = set()
         self.dfsHelper((0, 0), visited) # default currCell == 0, 0
 
@@ -73,6 +74,7 @@ class Maze:
 
     # iterative variation of dfs
     def dfsIter(self):
+        self.makeNodes()
         visited = set() # adds the 0,0 node
         stack = [(0, 0)] 
         while stack != []:
@@ -121,6 +123,7 @@ class Maze:
 
     # prims algorithm for maze gen
     def prims(self):
+        self.makeNodes()
         visited = set()
         visited.add((0, 0))
         wallList = self.getEdges((0, 0))
@@ -134,6 +137,7 @@ class Maze:
     
     # kruskals for maze gen
     def kruskals(self):
+        self.makeNodes()
         walls = self.getAllEdges()
         setList = self.getAllNodeSet()
         random.shuffle(walls)
@@ -146,6 +150,7 @@ class Maze:
                 nodeSet.update(otherNodeSet)
             
     def aldousBroder(self):
+        self.makeNodes()
         visited = set()
         currCell = random.randrange(self.rows), random.randrange(self.cols)
         visited.add(currCell)
@@ -167,27 +172,21 @@ class Maze:
         y = self.margin + (row+0.5) * cellHeight
         return (x, y)
     
-    def draw(self, canvas):
+    def redrawAll(self, canvas):
         for location in self.nodes:
             node = self.nodes[location]
             for nbor in node.getNbors():
-                node.draw(canvas, nbor, self.pathSize, self.getCellCenter)
+                node.drawIso(canvas, nbor, self.pathSize, self.getCellCenter, 10, (100, 100))    
 
 
-# def testMaze():
-#     print("Testing Maze...")
-#     m = Maze(5, 5)
-#     m.dfs()
-    
+# def appStarted(app):
+#     app.m = Maze(10, 10, app)
+#     app.m.aldousBroder()
 
-def appStarted(app):
-    app.m = Maze(10, 10, app)
-    app.m.aldousBroder()
+# def redrawAll(app, canvas):
+#     app.m.redrawAll(canvas)
 
-def redrawAll(app, canvas):
-    app.m.draw(canvas)
 
-runApp(width=500, height=500)
 
     
 
