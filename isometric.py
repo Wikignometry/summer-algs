@@ -24,7 +24,6 @@ def rotation(alpha, beta, M):
         [math.sin(beta), math.cos(beta), 0],
         [0, 0, 1]
         ]
-    print(np.matmul(xM, zM))
     return np.matmul(np.matmul(xM, zM), M)
 
 def projection(M):
@@ -43,9 +42,9 @@ def transform(M, dx, dy): # destructive and non-destructive
 def makeToIsometric(offset):
     def toIsometric(M):
         dx, dy = offset
-        M = rotation(35.264, 45, M)
+        M = rotation(54, 45, M)
         M = projection(M)
-        transform(M, dx, dy) 
+        # transform(M, -dx, -dy) 
         return tuple(transform((np.ndarray.tolist(M)[:2]), dx, dy)) #tuple of x, y
     return toIsometric
 
@@ -54,6 +53,7 @@ def makeToIsometric(offset):
 #     x0, y0, x1, y1 = 20, 20, 30, 40
 #     coords = [(x0, y0), (x0, y1), (x1, y1), (x1, y0)]
 
+#     toIsometric = makeToIsometric((50, 50))
 #     drawCoords = []
 #     for x, y in coords: # top plane
 #         drawCoords += toIsometric([x, y, z])

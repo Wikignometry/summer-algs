@@ -6,7 +6,7 @@ from button import *
 #################################################################
 
 def appStarted(app):
-    app.maze = Maze(10, 10, app)
+    app.maze = Maze(10, 10)
     app.maze.dfs()
     d = {'dfs': app.maze.dfsIter, 'prims': app.maze.prims,'kruskals': app.maze.kruskals,'aldousBroder': app.maze.aldousBroder}
     app.buttons = [DropDown((100, 40), d, (app.width//2, 20), 'maze alg')]
@@ -20,4 +20,4 @@ def redrawAll(app, canvas):
     for button in app.buttons:
         button.redrawAll(canvas)
 
-runApp(width=500, height=500)
+runApp(width=700, height=700)

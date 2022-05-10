@@ -8,23 +8,19 @@ from cmu_112_graphics import *
 
 # https://en.wikipedia.org/wiki/Maze_generation_algorithm
 class Maze:
-    def __init__(self, rows, cols, app=False):
+    def __init__(self, rows, cols):
         self.nodes = dict() # key = location, value = Node object
         # The Node object never has to be indexed until necessary
         self.rows =  rows #int
         self.cols = cols #int
-        self.gridDimensions(app) # gets the grid dimensions (maybe pass in?)
+        self.gridDimensions() # gets the grid dimensions (maybe pass in?)
         self.makeNodes() # intialixes all the nodes
         self.pathSize = 10 # width of the path
 
-    def gridDimensions(self, app):
+    def gridDimensions(self):
         self.cellSize = 50
-        if app:
-            print('foo')
-            app.width = self.cols * self.cellSize
-            app.height = self.cols * self.cellSize
-        self.width = self.cols * self.cellSize
-        self.height = self.rows * self.cellSize
+        self.gridWidth = self.cols * self.cellSize
+        self.gridHeight = self.rows * self.cellSize
         self.margin = 20
 
     # makes unconnected nodes
@@ -164,10 +160,8 @@ class Maze:
     # inspired by getCellBounds from http://www.cs.cmu.edu/~112/notes/notes-animations-part2.html
     def getCellCenter(self, location):
         row, col = location
-        gridWidth  = self.width - 2*self.margin
-        gridHeight = self.height - 2*self.margin
-        cellWidth = gridWidth / self.cols
-        cellHeight = gridHeight / self.rows
+        cellWidth = self.gridWidth / self.cols
+        cellHeight = self.gridHeight / self.rows
         x = self.margin + (col+0.5) * cellWidth
         y = self.margin + (row+0.5) * cellHeight
         return (x, y)
@@ -176,7 +170,7 @@ class Maze:
         for location in self.nodes:
             node = self.nodes[location]
             for nbor in node.getNbors():
-                node.drawIso(canvas, nbor, self.pathSize, self.getCellCenter, 10, (100, 100))    
+                node.drawIso(canvas, nbor, self.pathSize, self.getCellCenter, 10, (300, 100))    
 
 
 # def appStarted(app):
