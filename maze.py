@@ -9,7 +9,7 @@ from cmu_112_graphics import *
 # https://en.wikipedia.org/wiki/Maze_generation_algorithm
 class Maze:
     def __init__(self, rows, cols):
-        self.nodes = dict() # key = location, value = Node object
+        self.nodes = [[0]*rows for col in range(cols)] # row, col 2D list
         # The Node object never has to be indexed until necessary
         self.rows =  rows #int
         self.cols = cols #int
@@ -21,13 +21,13 @@ class Maze:
         self.cellSize = 50
         self.gridWidth = self.cols * self.cellSize
         self.gridHeight = self.rows * self.cellSize
-        self.margin = 20
+        self.margin = 50
 
     # makes unconnected nodes
     def makeNodes(self):
         for row in range(self.rows):
             for col in range(self.cols):
-                self.nodes[(row, col)] = Node((row, col))
+                self.nodes[row][col] = Node((row, col))
     
     # checks that a row, col is inside the grid
     def isInGrid(self, row, col):
@@ -64,7 +64,8 @@ class Maze:
         nbors = self.getUnvisitedNbors(visited, row, col)
         while  nbors != []:
             nbor = random.choice(nbors)
-            self.nodes[currCell].mutualAddNbor(self.nodes[nbor])
+            rowN, colN = nbor
+            self.nodes[row][col].mutualAddNbor(self.nodes[rowN][colN])
             self.dfsHelper(nbor, visited)
             nbors = self.getUnvisitedNbors(visited, row, col)
 
@@ -81,7 +82,8 @@ class Maze:
             if nbors != []:
                 stack.append(currCell)
                 nbor = random.choice(nbors)
-                self.nodes[currCell].mutualAddNbor(self.nodes[nbor])
+                rowN, colN = nbor
+                self.nodes[row][col].mutualAddNbor(self.nodes[rowN][colN])
                 visited.add(nbor)
                 stack.append(nbor)
 
@@ -126,7 +128,7 @@ class Maze:
         while wallList != []:
             wall = random.choice(wallList)
             if wall[1] not in visited: # because of the way we get the edges, wall[0] doesn't matter
-                self.nodes[wall[0]].mutualAddNbor(self.nodes[wall[1]])
+                self.nodes[wall[0][0]][wall[0][1]].mutualAddNbor(self.nodes[wall[1][0]][wall[1][1]])
                 visited.add(wall[1])
                 wallList += self.getEdges(wall[1])
             wallList.remove(wall)
@@ -140,7 +142,7 @@ class Maze:
         for wall in walls:
             nodeSet = self.getNodeSet(wall[0], setList) # nodeSet containing wall[0]
             if wall[1] not in nodeSet:
-                self.nodes[wall[0]].mutualAddNbor(self.nodes[wall[1]])
+                self.nodes[wall[0][0]][wall[0][1]].mutualAddNbor(self.nodes[wall[1][0]][wall[1][1]])
                 otherNodeSet = self.getNodeSet(wall[1], setList)
                 setList.remove(otherNodeSet)
                 nodeSet.update(otherNodeSet)
@@ -151,26 +153,32 @@ class Maze:
         currCell = random.randrange(self.rows), random.randrange(self.cols)
         visited.add(currCell)
         while len(visited) != self.rows * self.cols:
+            row, col = currCell
             nbor = random.choice(self.getLegalNbors(currCell))
             if nbor not in visited:
-                self.nodes[currCell].mutualAddNbor(self.nodes[nbor])
+                rowN, colN = nbor
+                self.nodes[row][col].mutualAddNbor(self.nodes[rowN][colN])
                 visited.add(nbor)
             currCell = nbor
 
     # inspired by getCellBounds from http://www.cs.cmu.edu/~112/notes/notes-animations-part2.html
     def getCellCenter(self, location):
         row, col = location
-        cellWidth = self.gridWidth / self.cols
-        cellHeight = self.gridHeight / self.rows
-        x = self.margin + (col+0.5) * cellWidth
-        y = self.margin + (row+0.5) * cellHeight
+        # cellWidth = self.gridWidth / self.cols
+        # cellHeight = self.gridHeight / self.rows
+        x = self.margin + (col+0.5) * self.cellSize
+        y = self.margin + (row+0.5) * self.cellSize
         return (x, y)
     
-    def redrawAll(self, canvas):
-        for location in self.nodes:
-            node = self.nodes[location]
-            for nbor in node.getNbors():
-                node.drawIso(canvas, nbor, self.pathSize, self.getCellCenter, 10, (300, 100))    
+    def redrawAll(self, canvas, isIsometric, xRot=None, zRot=None, z=10):
+        for row in range(self.rows):
+            for col in range(self.cols):
+                node = self.nodes[row][col]
+                for nbor in node.getNbors():
+                    if isIsometric:
+                        node.drawIso(canvas, nbor, self.pathSize, self.getCellCenter, z, (300, 100), xRot, zRot)  
+                    else:
+                        node.draw(canvas, nbor, self.pathSize, self.getCellCenter)  
 
 
 # def appStarted(app):

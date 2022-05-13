@@ -39,10 +39,10 @@ def transform(M, dx, dy): # destructive and non-destructive
     return M
 
 # makes a toIsometric function that uses a particular offset
-def makeToIsometric(offset):
+def makeToIsometric(offset, xRot, zRot):
     def toIsometric(M):
         dx, dy = offset
-        M = rotation(54, 45, M)
+        M = rotation(zRot, xRot, M)
         M = projection(M)
         # transform(M, -dx, -dy) 
         return tuple(transform((np.ndarray.tolist(M)[:2]), dx, dy)) #tuple of x, y
