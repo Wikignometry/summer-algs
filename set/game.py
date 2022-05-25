@@ -4,11 +4,11 @@ from cmu_112_graphics import *
 from card import *
 ###################################################################
 
-def appStarted(app):
-    app.cards = getAllCards
+def game_appStarted(app):
+    app.cards = getAllCards()
     pass
 
-def mousePressed(app, event):
+def game_mousePressed(app, event):
     pass
 
-def redrawAll(app, event):
+def game_redrawAll(app, event):
